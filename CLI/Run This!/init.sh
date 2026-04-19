@@ -27,7 +27,7 @@ if command -v brew &>/dev/null; then
     info "Homebrew 已安装，跳过"
 else
     info "正在安装 Homebrew (Linuxbrew)..."
-    /bin/bash -c "$(curl -fsSL https://ghproxy.cn/https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    /bin/bash -c "$(curl -fsSL https://kkgithub.com/Homebrew/install/raw/HEAD/install.sh)"
     
     if [[ -d "/home/linuxbrew/.linuxbrew" ]]; then
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
@@ -41,7 +41,7 @@ fi
 section "Dotfiles Repository"
 
 DOTFILES_DIR="$HOME/dotfiles"
-REPO_URL="https://ghproxy.cn/https://github.com/你的用户名/Dotfiles.git"
+REPO_URL="https://kkgithub.com/NOTHXXX/Dotfiles.git"
 MAX_RETRY=3
 
 if [[ -d "$DOTFILES_DIR" ]]; then
