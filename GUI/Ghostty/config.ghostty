@@ -33,10 +33,10 @@ cursor-style-blink = true
 cursor-opacity = 0.8
 
 # === shaders ===
-custom-shader = ~/.config/ghostty/cursor_sweep.glsl
-custom-shader = ~/.config/ghostty/ripple_cursor.glsl
-custom-shader = ~/.config/ghostty/cursor_tail.glsl
-custom-shader = ~/.config/ghostty/cursor_warp.glsl
+custom-shader = shaders/cursor_sweep.glsl
+custom-shader = shaders/ripple_cursor.glsl
+custom-shader = shaders/cursor_tail.glsl
+custom-shader = shaders/cursor_warp.glsl
 
 
 # === 快捷键 ===
