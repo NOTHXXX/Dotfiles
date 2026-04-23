@@ -44,7 +44,7 @@ custom-shader = shaders/cursor_warp.glsl
 keybind = global:ctrl+`=toggle_quick_terminal
 
 #标签页
-keybind = cmd+t=new_tab
+keybind = cmd+t=new_window
 keybind = cmd+y=close_surface
 
 #字体大小

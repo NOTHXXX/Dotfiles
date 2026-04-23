@@ -1,0 +1,48 @@
+{
+    "darwin": {
+        "cli": {
+            "symlink": {
+                "~/.config": [
+                    {
+                        "fake": "~/.config/starship.toml",
+                        "real": "../Dotfiles/CLI/starship/starship.toml"
+                    },
+                    {
+                        "fake": "~/Library/Application Support/lazygit/config.yml",
+                        "real": "../Dotfiles/CLI/lazygit/config.yml"
+                    },
+                    {
+                        "fake": "~/.config/yazi",
+                        "real": "../Dotfiles/CLI/yazi"
+                    },
+                    {
+                        "fake": "~/.config/fish",
+                        "real": "../Dotfiles/CLI/fish"
+                    },
+                    {
+                        "fake": "~/.config/btop",
+                        "real": "../Dotfiles/CLI/btop"
+                    },
+                    {
+                        "fake": "~/.config/bat",
+                        "real": "../Dotfiles/CLI/bat"
+                    }
+                ]
+            }
+        },
+        "mac": {
+            "symlink": {
+                "~/.config": [
+                    {
+                        "fake": "~/.config/aerospace",
+                        "real": "../Dotfiles/GUI/aerospace"
+                    },
+                    {
+                        "fake": "~/.config/ghostty",
+                        "real": "../Dotfiles/GUI/Ghostty"
+                    }
+                ]
+            }
+        }
+    }
+}

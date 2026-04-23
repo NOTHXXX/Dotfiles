@@ -1,0 +1,197 @@
+[[mgr.prepend_keymap]]
+on   = "l"
+run  = "plugin smart-enter"
+desc = "进入子目录或者打开文件"
+
+[[mgr.prepend_keymap]]
+on = ["C"]
+run = "plugin ouch"
+desc = "使用ouch压缩文件"
+
+[[mgr.prepend_keymap]]
+on = [ "s", "s" ]
+run  = "plugin what-size"
+desc = "计算所选项文件大小" 
+
+[[mgr.prepend_keymap]]
+on = [ "s", "d" ]
+run  = "search --via=fd"
+desc = "通过fd命令搜索文件" 
+
+[[mgr.prepend_keymap]]
+on = "o"
+run = "shell 'open \"$@\"' --confirm"
+desc = "用访达打开"
+
+[[mgr.prepend_keymap]]
+on   = "f"
+run  = "plugin smart-filter"
+desc = "Smart-filter插件筛选"
+
+#系统按键翻译
+[[mgr.prepend_keymap]]
+on = ["<Esc>"]
+run = "escape"
+desc = "取消查找、退出可视模式、清除选中、取消筛选或取消搜索。"
+
+[[mgr.prepend_keymap]]
+on = ["<C-z>"]
+run = "suspend"
+desc = "暂停 Yazi 并返回父级 shell 以继续处理其他任务。fg命令恢复"
+
+[[mgr.prepend_keymap]]
+on = ["<S-Up>"]
+run = "arrow -50%"
+desc = "向上半个屏幕"
+
+[[mgr.prepend_keymap]]
+on = ["<S-Down>"]
+run = "arrow 50%"
+desc = "向下半个屏幕"
+
+[[mgr.prepend_keymap]]
+on = ["g","g"]
+run = "arrow top"
+desc = "回顶"
+
+[[mgr.prepend_keymap]]
+on = ["G"]
+run = "arrow bot"
+desc = "到最下面"
+
+[[mgr.prepend_keymap]]
+on = ["<C-a>"]
+run = "toggle_all"
+desc = "全选(可以反选)"
+
+[[mgr.prepend_keymap]]
+on = ["<C-r>"]
+run = "toggle_all state=on"
+desc = "全选(不可反选)"
+
+[[mgr.prepend_keymap]]
+on = ["<K>"]
+run = "arrow -50%"
+desc = "向上半个屏幕"
+[[mgr.prepend_keymap]]
+on = ["<J>"]
+run = "arrow 50%"
+desc = "向下半个屏幕"
+[[mgr.prepend_keymap]]
+on = ["y"]
+run = "yank"
+desc = "复制选中文件(yank)"
+[[mgr.prepend_keymap]]
+on = ["x"]
+run = "yank --cut"
+desc = "剪切选中文件(yank cut)"
+[[mgr.prepend_keymap]]
+on = ["c","y"]
+run = "yank"
+desc = "复制选中文件(yank)"
+[[mgr.prepend_keymap]]
+on = ["c","x"]
+run = "yank --cut"
+desc = "剪切选中文件(yank cut)"
+[[mgr.prepend_keymap]]
+on = ["."]
+run = "hidden toggle"
+desc = "切换隐藏文件显示"
+[[mgr.prepend_keymap]]
+on = ["g","z"]
+run = "cd ~/desktop"
+desc = "桌面"
+[[mgr.prepend_keymap]]
+on = ["m","s"]
+run = "linemode size"
+desc = "显示大小"
+[[mgr.prepend_keymap]]
+on = ["m","p"]
+run = "linemode permissions"
+desc = "显示权限"
+[[mgr.prepend_keymap]]
+on = ["m","b"]
+run = "linemode btime"
+desc = "显示创建时间"
+[[mgr.prepend_keymap]]
+on = ["m","m"]
+run = "linemode mtime"
+desc = "显示修改时间"
+[[mgr.prepend_keymap]]
+on = ["m","o"]
+run = "linemode owner"
+desc = "显示所有者"
+[[mgr.prepend_keymap]]
+on = ["m","n"]
+run = "linemode none"
+desc = "无显示"
+
+[[mgr.prepend_keymap]]
+on = ["c","c"]
+run = "copy path"
+desc = "复制文件路径"
+[[mgr.prepend_keymap]]
+on = ["c","d"]
+run = "copy dirname"
+desc = "复制目录路径"
+[[mgr.prepend_keymap]]
+on = ["c","f"]
+run = "copy filename"
+desc = "复制文件名"
+[[mgr.prepend_keymap]]
+on = ["c","n"]
+run = "copy name_without_ext"
+desc = "复制文件名(无拓展名)"
+
+[[mgr.prepend_keymap]]
+on = [",","m"]
+run = "sort mtime --reverse=no"
+desc = "修改时间排序(新旧)"
+[[mgr.prepend_keymap]]
+on = [",","M"]
+run = "sort mtime --reverse"
+desc = "修改时间排序(旧新)"
+[[mgr.prepend_keymap]]
+on = [",","b"]
+run = "sort btime --reverse=no"
+desc = "创建时间排序(新旧)"
+[[mgr.prepend_keymap]]
+on = [",","B"]
+run = "sort btime --reverse"
+desc = "创建时间排序(旧新)"
+[[mgr.prepend_keymap]]
+on = [",","e"]
+run = "sort extension --reverse=no"
+desc = "拓展名排序"
+[[mgr.prepend_keymap]]
+on = [",","E"]
+run = "sort extension --reverse"
+desc = "拓展名反序"
+[[mgr.prepend_keymap]]
+on = [",","a"]
+run = "sort alphabetical--reverse=no"
+desc = "字母表排序(a-z)"
+[[mgr.prepend_keymap]]
+on = [",","A"]
+run = "sort alphabetical --reverse"
+desc = "字母表排序(z-a)"
+[[mgr.prepend_keymap]]
+on = [",","n"]
+run = "sort natural --reverse=no"
+desc = "自然排序"
+[[mgr.prepend_keymap]]
+on = [",","N"]
+run = "sort natural --reverse"
+desc = "自然反序"
+[[mgr.prepend_keymap]]
+on = [",","s"]
+run = "sort size --reverse=no"
+desc = "大小排序(小大)"
+[[mgr.prepend_keymap]]
+on = [",","S"]
+run = "sort size --reverse"
+desc = "大小排序(大小)"
+[[mgr.prepend_keymap]]
+on = [",","r"]
+run = "sort random --reverse=no"
+desc = "随机排序"
