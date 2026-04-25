@@ -128,8 +128,11 @@ on-mode-changed = []
     alt-shift-right = 'move right'
 
     # 尺寸大小
-    alt-minus = 'resize smart -50'
-    alt-equal = 'resize smart +50'
+    alt-minus = 'resize width -50'
+    alt-equal = 'resize width +50'
+    # 尺寸大小
+    alt-shift-minus = 'resize height -50'
+    alt-shift-equal = 'resize height +50'
 
     # 切换工作区
     alt-1 = 'workspace 1'
@@ -144,10 +147,18 @@ on-mode-changed = []
     alt-e = 'workspace E'
     alt-q = 'workspace Q'
     alt-w = 'workspace W'
-	alt-a = 'workspace A'
-	alt-s = 'workspace S'
-	alt-d = 'workspace D'
+    alt-a = 'workspace A'
+    alt-s = 'workspace S'
+    alt-d = 'workspace D'
     
+    #平衡窗口
+    alt-0 = 'balance-sizes'
+    #重置分屏
+    alt-shift-0 = 'flatten-workspace-tree'
+    
+    #工作区移动至显示器
+    cmd-alt-ctrl-minus= 'move-workspace-to-monitor prev'
+    cmd-alt-ctrl-equal= 'move-workspace-to-monitor next'
 
     # 把窗口移动到相应工作区
     alt-shift-1 = 'move-node-to-workspace 1'
@@ -162,9 +173,9 @@ on-mode-changed = []
     alt-shift-e = 'move-node-to-workspace E'
     alt-shift-q = 'move-node-to-workspace Q'
     alt-shift-w = 'move-node-to-workspace W'
-	alt-shift-a = 'move-node-to-workspace A'
-	alt-shift-s = 'move-node-to-workspace S'
-	alt-shift-d = 'move-node-to-workspace D'
+    alt-shift-a = 'move-node-to-workspace A'
+    alt-shift-s = 'move-node-to-workspace S'
+    alt-shift-d = 'move-node-to-workspace D'
 	
 	#全屏
 	alt-f = 'fullscreen'
@@ -219,3 +230,9 @@ run = 'layout floating'
 [[on-window-detected]]
 if.app-id = 'com.apple.finder'
 run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.tomatodo.app'
+run = 'layout floating'
+
+

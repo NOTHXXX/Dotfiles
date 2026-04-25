@@ -24,9 +24,14 @@ run = "shell 'open \"$@\"' --confirm"
 desc = "用访达打开"
 
 [[mgr.prepend_keymap]]
-on   = "f"
+on   = ["f","s"]
 run  = "plugin smart-filter"
 desc = "Smart-filter插件筛选"
+
+[[mgr.prepend_keymap]]
+on   = [ "f","f" ]
+run  = "plugin toggle-pane max-preview"
+desc = "最大化预览面板"
 
 #系统按键翻译
 [[mgr.prepend_keymap]]
