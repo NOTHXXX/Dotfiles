@@ -126,70 +126,72 @@ if command -v npm &>/dev/null; then
 fi
 
 # ──────────────────────────────────────────────────
-# 6. 环境清理 (重置 Git 代理)
-# ──────────────────────────────────────────────────
-section "Cleanup"
-
-# 检查是否存在全局 Git 代理配置
-if git config --global --get http.proxy > /dev/null; then
-    info "正在重置全局 Git 代理配置..."
-    git config --global --unset http.proxy
-    git config --global --unset https.proxy
-    info "Git 代理已清理，恢复直连模式。"
-else
-    info "未检测到残留的 Git 代理配置，无需清理。"
-fi
-
-# 提示环境变量失效
-warn "提示：当前 Shell 会话的 http_proxy 环境变量在退出后会自动失效。"
-
-
-# ──────────────────────────────────────────────────
-# 软链接与配置同步模块 - 调用本地 flk
+# 软链接与配置同步模块 - 自动识别系统与架构调用 flk
 # ──────────────────────────────────────────────────
 section "Running flk from Dotfiles"
 
 # 1. 确认 flk-store.json 已就绪
 FLK_CONFIG_DIR="$HOME/.config/flk"
 FLK_STORE_DEST="$FLK_CONFIG_DIR/flk-store.json"
-# 对应你提到的仓库路径
 FLK_STORE_SRC="$HOME/dotfiles/CLI/flk/flk-store.json"
 
 if [[ -f "$FLK_STORE_SRC" ]]; then
     mkdir -p "$FLK_CONFIG_DIR"
-    # 使用符号链接，方便以后在仓库里直接修改配置
     ln -sf "$FLK_STORE_SRC" "$FLK_STORE_DEST"
     info "已将 flk-store.json 链接至 $FLK_STORE_DEST"
 else
     die "错误：未在仓库中找到 $FLK_STORE_SRC"
 fi
 
-# 2. 定位并运行本地 flk
-# 根据你提供的路径，flk 本体的可执行文件应该在 $HOME/dotfiles/flk
-FLK_EXEC="$HOME/dotfiles/flk"
+# 2. 识别系统与架构 (仅匹配 amd64 和 macOS M芯片)
+OS=$(uname -s)
+ARCH=$(uname -m)
+FLK_FILENAME=""
 
+if [[ "$OS" == "Linux" && "$ARCH" == "x86_64" ]]; then
+    # 适用于 Linux x86_64 (amd64)
+    FLK_FILENAME="flk-amd64"
+elif [[ "$OS" == "Darwin" && "$ARCH" == "arm64" ]]; then
+    # 适用于 macOS Apple Silicon (M1/M2/M3)
+    FLK_FILENAME="flk-mac"
+fi
+
+# 检查是否匹配到已知文件
+if [[ -z "$FLK_FILENAME" ]]; then
+    warn "当前系统架构 ($OS-$ARCH) 没有对应的预编译 flk 文件。"
+    warn "仅支持: Linux-x86_64 或 macOS-arm64 (M芯片)。"
+    die "请检查仓库中的文件或手动编译 flk。"
+fi
+
+FLK_EXEC="$HOME/dotfiles/$FLK_FILENAME"
+
+# 3. 定位并运行架构对应的 flk
 if [[ -f "$FLK_EXEC" ]]; then
-    info "检测到本地 flk 工具，准备执行..."
+    info "检测到适用于 $OS-$ARCH 的执行文件: $FLK_FILENAME"
     
-    # 确保它有执行权限
     chmod +x "$FLK_EXEC"
     
     # 运行 flk check
-    # 提示：如果 flk 是脚本（如 Python/Node），可能需要指定解释器
-    # 如果它是二进制文件或已包含 Shebang，直接运行即可
     if "$FLK_EXEC" check; then
-        info "flk check 预运行成功。"
+        info "flk check 成功。"
         
-        # 交互式询问是否执行应用（Apply）
-        echo -ne "${YELLOW}是否立即应用 flk 配置以创建所有软链接? (y/n): ${NC}"
-        read -r response
+        echo -ne "${YELLOW}是否立即应用 flk 配置? (y/n, 20s后默认n): ${NC}"
+        # 兼容管道模式的输入读取
+        if [[ -t 0 ]]; then
+            read -r -t 20 response || response="n"
+        else
+            read -r -t 20 response < /dev/tty || response="n"
+        fi
+
         if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-            "$FLK_EXEC" apply && info "所有软链接已成功同步！"
+            "$FLK_EXEC" apply && info "配置已同步！"
+        else
+            info "已跳过应用。"
         fi
     else
-        warn "flk check 执行失败，请检查配置文件格式。"
+        warn "flk check 失败，请检查配置文件。"
     fi
 else
-    die "错误：在 $FLK_EXEC 未找到 flk 执行文件。"
+    die "错误：未找到文件 $FLK_EXEC。"
 fi
-
+fi
