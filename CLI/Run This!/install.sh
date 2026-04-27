@@ -143,7 +143,7 @@ if [[ "$OS" == "Linux" && "$ARCH" == "x86_64" ]]; then
 elif [[ "$OS" == "Darwin" && "$ARCH" == "arm64" ]]; then
     # 适用于 macOS Apple Silicon (M1/M2/M3)
     FLK_FILENAME="flk-mac"
-    FLK_CONFIG_NAME="flk-macr.json"
+    FLK_CONFIG_NAME="flk-mac.json"
 fi
 
 # 检查是否匹配到已知平台
