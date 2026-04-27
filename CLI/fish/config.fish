@@ -4,7 +4,13 @@ if status is-interactive
 	# ── Homebrew Shell Environment
 		if test -x /opt/homebrew/bin/brew
 		/opt/homebrew/bin/brew shellenv | source
+		# 自动初始化linux  Homebrew 环境
+		if test -d /home/linuxbrew/.linuxbrew
+    			eval (/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+		else if test -d ~/.linuxbrew
+    			eval (~/.linuxbrew/bin/brew shellenv)
 	end
+	
 
 	# Starship
 		if command -q starship
