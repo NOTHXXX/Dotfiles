@@ -1,5 +1,5 @@
 # Dotfiles
-拉取：https://ghproxy.net/https://raw.githubusercontent.com/NOTHXXX/Dotfiles/main/CLI/Run%20This!/init.sh
+拉取：curl -fsSL 'https://ghproxy.net/https://raw.githubusercontent.com/NOTHXXX/Dotfiles/main/CLI/Run%20This!/init.sh' && bash init.sh
 
 #tree
 Liunux:Cli:runthis-init

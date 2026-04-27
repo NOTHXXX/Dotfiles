@@ -23,34 +23,42 @@ section "System & Homebrew"
 info "更新系统软件包列表..."
 sudo apt-get update -y && sudo apt-get install -y build-essential curl git procps file
 
+# ... 前面代码保持不变 ...
+
 if command -v brew &>/dev/null; then
     info "Homebrew 已安装，跳过"
 else
     info "正在通过镜像安装 Homebrew (Linuxbrew)..."
     
-    # 设置 Homebrew 安装所需的临时镜像环境变量
+    # 临时镜像环境变量
     export HOMEBREW_INSTALL_FROM_API=1
     export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
     export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
     export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
     
-    # 使用中科大镜像脚本进行安装
     /bin/bash -c "$(curl -fsSL https://mirrors.ustc.edu.cn/functions/install/homebrew-install.sh)"
     
-    if [[ -d "/home/linuxbrew/.linuxbrew" ]]; then
-        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    # 【核心修改 1】: 确定安装路径并立即注入当前 Shell 会话
+    BREW_PATH="/home/linuxbrew/.linuxbrew/bin/brew"
+    if [[ -f "$BREW_PATH" ]]; then
+        # 这一步非常重要！让当前运行中的 init.sh 进程立刻认识 brew
+        eval "$($BREW_PATH shellenv)"
         
-        # 将环境变量永久写入 .bashrc，确保以后使用 brew 依然走镜像
+        # 写入 .bashrc 供以后登录使用
         {
-          echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"'
+          echo "eval \"\$($BREW_PATH shellenv)\""
           echo 'export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"'
           echo 'export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"'
           echo 'export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"'
         } >> "$HOME/.bashrc"
         
-        info "Homebrew 镜像配置完成。"
+        info "Homebrew 环境变量已即时加载并写入 .bashrc"
+    else
+        die "Homebrew 安装似乎失败，找不到 $BREW_PATH"
     fi
 fi
+
+
 
 # ──────────────────────────────────────────────────
 # 2. 拉取 Dotfiles 仓库
@@ -108,23 +116,53 @@ sudo systemctl enable ssh --now
 # ──────────────────────────────────────────────────
 section "Next Steps"
 
-# 根据你提供的本地路径结构，推算服务器上的对应路径
-# 本地: /Users/noth/Dotfiles/CLI/Run This!/install.sh
-# 服务器克隆后: $HOME/dotfiles/CLI/Run This!/install.sh
 TARGET_INSTALL_SCRIPT="$DOTFILES_DIR/CLI/Run This!/install.sh"
 
 if [[ -f "$TARGET_INSTALL_SCRIPT" ]]; then
-    echo -ne "${YELLOW}仓库拉取成功。是否立即运行 $TARGET_INSTALL_SCRIPT? (y/n, 10s后默认y): ${NC}"
-    read -r -t 30 response || response="y"
+    # 解决 curl | bash 模式下 read 无法读取用户输入的问题
+    # 将标准输入重定向回终端 (/dev/tty)
+    echo -ne "${YELLOW}仓库拉取成功。是否立即运行安装脚本? (y/n, 30s后默认y): ${NC}"
+    if [[ -t 0 ]]; then
+        read -r -t 30 response || response="y"
+    else
+        # 如果是在管道中运行，尝试从控制台获取输入
+        read -r -t 30 response < /dev/tty || response="y"
+    fi
 
     if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-        info "正在启动安装程序..."
-        # 必须带引号，因为 "Run This!" 包含空格
+        info "正在配置环境并启动安装程序..."
+        
+        # 【关键步骤】在执行子脚本前，尝试在当前进程加载 brew 环境
+        # 这样 install.sh 就能直接继承到 PATH
+        BREW_LOCATIONS=(
+            "/home/linuxbrew/.linuxbrew/bin/brew"
+            "$HOME/.linuxbrew/bin/brew"
+        )
+        
+        for loc in "${BREW_LOCATIONS[@]}"; do
+            if [[ -f "$loc" ]]; then
+                eval "$($loc shellenv)"
+                info "已激活 Homebrew 环境: $loc"
+                break
+            fi
+        done
+
+        # 检查 brew 是否真的可用
+        if ! command -v brew &>/dev/null; then
+            warn "当前会话仍未找到 brew，install.sh 可能会报错。"
+        fi
+
+        # 执行子脚本
+        # 这里的引号非常关键，处理 "Run This!" 中的空格
         bash "$TARGET_INSTALL_SCRIPT"
     else
         info "已跳过。你可以随后手动运行: ${YELLOW}bash \"$TARGET_INSTALL_SCRIPT\"${NC}"
     fi
 else
     warn "在仓库中未找到 install.sh"
-    info "检查路径: $TARGET_INSTALL_SCRIPT"
+    info "预期路径: $TARGET_INSTALL_SCRIPT"
+    
+    # 调试：如果没找到，帮用户列出目录结构，方便排查
+    info "当前 $DOTFILES_DIR 的目录结构："
+    ls -R "$DOTFILES_DIR" | head -n 20
 fi
