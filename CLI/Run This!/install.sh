@@ -126,46 +126,50 @@ if command -v npm &>/dev/null; then
 fi
 
 # ──────────────────────────────────────────────────
-# 软链接与配置同步模块 - 自动识别系统与架构调用 flk
+# 软链接与配置同步模块 - 自动识别系统调用对应配置与 flk
 # ──────────────────────────────────────────────────
 section "Running flk from Dotfiles"
 
-# 1. 确认 flk-store.json 已就绪
-FLK_CONFIG_DIR="$HOME/.config/flk"
-FLK_STORE_DEST="$FLK_CONFIG_DIR/flk-store.json"
-FLK_STORE_SRC="$HOME/dotfiles/CLI/flk/flk-store.json"
-
-if [[ -f "$FLK_STORE_SRC" ]]; then
-    mkdir -p "$FLK_CONFIG_DIR"
-    ln -sf "$FLK_STORE_SRC" "$FLK_STORE_DEST"
-    info "已将 flk-store.json 链接至 $FLK_STORE_DEST"
-else
-    die "错误：未在仓库中找到 $FLK_STORE_SRC"
-fi
-
-# 2. 识别系统与架构 (仅匹配 amd64 和 macOS M芯片)
+# 1. 识别系统与架构 (仅匹配 Linux-amd64 和 macOS-M芯片)
 OS=$(uname -s)
 ARCH=$(uname -m)
 FLK_FILENAME=""
+FLK_CONFIG_NAME=""
 
 if [[ "$OS" == "Linux" && "$ARCH" == "x86_64" ]]; then
     # 适用于 Linux x86_64 (amd64)
     FLK_FILENAME="flk-amd64"
+    FLK_CONFIG_NAME="flk-amd64.json"
 elif [[ "$OS" == "Darwin" && "$ARCH" == "arm64" ]]; then
     # 适用于 macOS Apple Silicon (M1/M2/M3)
     FLK_FILENAME="flk-mac"
+    FLK_CONFIG_NAME="flk-macr.json"
 fi
 
-# 检查是否匹配到已知文件
+# 检查是否匹配到已知平台
 if [[ -z "$FLK_FILENAME" ]]; then
-    warn "当前系统架构 ($OS-$ARCH) 没有对应的预编译 flk 文件。"
+    warn "当前系统架构 ($OS-$ARCH) 没有对应的预编译 flk 文件或配置。"
     warn "仅支持: Linux-x86_64 或 macOS-arm64 (M芯片)。"
     die "请检查仓库中的文件或手动编译 flk。"
 fi
 
-FLK_EXEC="$HOME/dotfiles/$FLK_FILENAME"
+# 2. 链接对应的配置文件至目标位置
+FLK_CONFIG_DIR="$HOME/.config/flk"
+FLK_STORE_DEST="$FLK_CONFIG_DIR/flk-store.json"
+FLK_STORE_SRC="$HOME/dotfiles/CLI/flk/$FLK_CONFIG_NAME"
+
+if [[ -f "$FLK_STORE_SRC" ]]; then
+    mkdir -p "$FLK_CONFIG_DIR"
+    # 链接特定系统的 json 到统一的 flk-store.json
+    ln -sf "$FLK_STORE_SRC" "$FLK_STORE_DEST"
+    info "已将 $FLK_CONFIG_NAME 链接至 $FLK_STORE_DEST"
+else
+    die "错误：未在仓库中找到配置文件 $FLK_STORE_SRC"
+fi
 
 # 3. 定位并运行架构对应的 flk
+FLK_EXEC="$HOME/dotfiles/$FLK_FILENAME"
+
 if [[ -f "$FLK_EXEC" ]]; then
     info "检测到适用于 $OS-$ARCH 的执行文件: $FLK_FILENAME"
     
@@ -189,8 +193,8 @@ if [[ -f "$FLK_EXEC" ]]; then
             info "已跳过应用。"
         fi
     else
-        warn "flk check 失败，请检查配置文件。"
+        warn "flk check 失败，请检查配置文件格式。"
     fi
 else
-    die "错误：未找到文件 $FLK_EXEC。"
+    die "错误：未找到执行文件 $FLK_EXEC。"
 fi
