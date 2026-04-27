@@ -16,6 +16,60 @@ die() { echo -e "${RED}[✗]${NC} $*" >&2; exit 1; }
 section() { echo -e "\n${YELLOW}── $* ──${NC}"; }
 
 # ──────────────────────────────────────────────────
+# 0. 代理配置询问 (支持反复尝试与反悔)
+# ──────────────────────────────────────────────────
+section "Proxy Configuration"
+
+while true; do
+    echo -e "${YELLOW}是否需要设置临时代理来加速下载? (y/n)${NC}"
+    read -r -p "> " USE_PROXY
+    
+    if [[ "$USE_PROXY" =~ ^[Nn]$ ]]; then
+        info "已确认不使用代理，继续执行后续步骤。"
+        break # 只有这里会彻底跳出代理配置
+    elif [[ "$USE_PROXY" =~ ^[Yy]$ ]]; then
+        echo -e "${GREEN}请输入代理地址 (例如 127.0.0.1:7890):${NC}"
+        read -r -p "> " PROXY_ADDR
+        
+        if [[ -z "$PROXY_ADDR" ]]; then
+            warn "地址不能为空。"
+            continue # 返回循环开头，重新询问是否需要代理
+        fi
+
+        # 二次确认
+        echo -e "${YELLOW}确认使用代理 http://$PROXY_ADDR 吗? (y/n)${NC}"
+        read -r -p "> " CONFIRM
+        if [[ ! "$CONFIRM" =~ ^[Yy]$ ]]; then
+            info "已取消当前输入，请重新选择。"
+            continue # 返回循环开头，让你有机会重新输入 y 或 n
+        fi
+
+        # 连通性验证
+        info "正在验证代理 $PROXY_ADDR 的连通性..."
+        if curl -s --connect-timeout 5 -I -x "http://$PROXY_ADDR" "https://www.google.com" > /dev/null; then
+            info "验证成功！代理可用。"
+            export http_proxy="http://$PROXY_ADDR"
+            export https_proxy="http://$PROXY_ADDR"
+            git config --global http.proxy "http://$PROXY_ADDR"
+            git config --global https.proxy "http://$PROXY_ADDR"
+            break # 验证成功，退出循环
+        else
+            warn "验证失败：无法连接到外部网络。"
+            echo -e "${YELLOW}是要重新输入代理地址 (r)，还是直接放弃代理继续运行 (f)? (r/f)${NC}"
+            read -r -p "> " FAIL_CHOICE
+            if [[ "$FAIL_CHOICE" =~ ^[Ff]$ ]]; then
+                info "放弃代理，尝试直接连接..."
+                break
+            else
+                continue # 选择 r 则回到循环开头重新开始
+            fi
+        fi
+    else
+        warn "无效输入，请输入 y 或 n。"
+    fi
+done
+
+# ──────────────────────────────────────────────────
 # 1. 系统基础环境与 Homebrew
 section "System & Homebrew"
 

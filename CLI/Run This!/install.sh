@@ -101,6 +101,24 @@ if command -v npm &>/dev/null; then
     info "npm 镜像源已更新。"
 fi
 
+# ──────────────────────────────────────────────────
+# 6. 环境清理 (重置 Git 代理)
+# ──────────────────────────────────────────────────
+section "Cleanup"
+
+# 检查是否存在全局 Git 代理配置
+if git config --global --get http.proxy > /dev/null; then
+    info "正在重置全局 Git 代理配置..."
+    git config --global --unset http.proxy
+    git config --global --unset https.proxy
+    info "Git 代理已清理，恢复直连模式。"
+else
+    info "未检测到残留的 Git 代理配置，无需清理。"
+fi
+
+# 提示环境变量失效
+warn "提示：当前 Shell 会话的 http_proxy 环境变量在退出后会自动失效。"
+
 
 # ──────────────────────────────────────────────────
 # 软链接与配置同步模块 - 调用本地 flk
@@ -150,3 +168,4 @@ if [[ -f "$FLK_EXEC" ]]; then
 else
     die "错误：在 $FLK_EXEC 未找到 flk 执行文件。"
 fi
+
