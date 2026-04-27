@@ -175,10 +175,15 @@ if [[ -f "$FLK_EXEC" ]]; then
     
     chmod +x "$FLK_EXEC"
     
-    # 运行 flk check
+    # 运行 flk fix
     if "$FLK_EXEC" fix; then
         info "flk fix 成功。"
+    else
+        # 这里建议加一个失败的处理逻辑，或者直接报错
+        info "flk fix 执行失败。"
+    fi  # 闭合内层的 if
         
-        else
+else
+    # 如果文件不存在，执行 die
     die "错误：未找到执行文件 $FLK_EXEC。"
-fi
+fi  # 闭合最外层的 if
