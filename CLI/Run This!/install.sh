@@ -194,4 +194,3 @@ if [[ -f "$FLK_EXEC" ]]; then
 else
     die "错误：未找到文件 $FLK_EXEC。"
 fi
-fi
