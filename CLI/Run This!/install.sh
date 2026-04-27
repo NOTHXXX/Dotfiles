@@ -48,9 +48,21 @@ if [[ -f "$BREWFILE" ]]; then
     export https_proxy="$PROXY_ADDR"
     export all_proxy="$PROXY_ADDR"
     
-    brew bundle --file="$BREWFILE"
+    # 【2. 强制 Git 走代理】(关键步：brew bundle 内部会频繁调用 git)
+    git config --global http.proxy "$PROXY_ADDR"
+    git config --global https.proxy "$PROXY_ADDR"
+
+    # 【3. 解决 API 响应慢】
+    # 如果代理不够稳，可以尝试开启此变量强制不使用 API（虽然不推荐，但有时能避开卡死）
+    # export HOMEBREW_NO_INSTALL_FROM_API=1
     
-    #2.清理代理
+    # 执行安装
+    # 加上 --verbose 可以看到具体卡在哪一步
+    brew bundle --file="$BREWFILE" --verbose
+    
+    # 【4. 清理配置】
+    git config --global --unset http.proxy
+    git config --global --unset https.proxy
     unset http_proxy https_proxy all_proxy
 else
     die "错误: 未能在 $CURRENT_DIR 找到 Brewfile。"
