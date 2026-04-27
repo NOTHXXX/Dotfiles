@@ -22,7 +22,7 @@ section "Proxy Configuration"
 
 while true; do
     echo -e "${YELLOW}是否需要设置临时代理来加速下载? (y/n)${NC}"
-    read -r -p "> " USE_PROXY
+    read -r -p "> " USE_PROXY </dev/tty
     
     if [[ "$USE_PROXY" =~ ^[Nn]$ ]]; then
         info "已确认不使用代理，继续执行后续步骤。"
