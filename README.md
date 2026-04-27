@@ -7,12 +7,12 @@
 
 ```bash
 /bin/bash -c "$(curl -x [http://192.168.31.10:20172](http://192.168.31.10:20172) -fsSL '[https://raw.githubusercontent.com/NOTHXXX/Dotfiles/main/CLI/Run%20This!/init.sh](https://raw.githubusercontent.com/NOTHXXX/Dotfiles/main/CLI/Run%20This!/init.sh)')"
-、、、
+```
 
 卸载 Homebrew
-、、、bash
+```bash
 /bin/bash -c "$(curl -x [http://192.168.31.10:20172](http://192.168.31.10:20172) -fsSL [https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh](https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh))"
-、、、
+```
 
 
 ##🛠️ 脚本结构说明 (Scripts Tree)
