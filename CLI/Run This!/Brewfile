@@ -1,0 +1,34 @@
+#homebrew安装列表
+
+brew "bat"
+brew "btop"
+brew "eza"
+brew "fish"
+brew "fisher"
+brew "fzf,fd"
+brew "lazygit"
+brew "starship"
+brew "zoxide"
+brew "fastfetch"
+
+#yazi
+brew "yazi"
+brew "ffmpeg-full"
+brew "sevenzip"
+brew "jq"
+brew "poppler"
+brew "fd"
+brew "ripgrep"
+brew "fzf"
+brew "zoxide"
+brew "resvg"
+brew "imagemagick-full"
+brew "ouch"
+brew "mediainfo"
+brew "ImageMagick"
+brew "rich-cli"
+# 字体 (Nerd Font)
+# 注意：Linux 下安装字体有时需要通过 tap
+tap "homebrew/cask-fonts"
+brew "font-symbols-only-nerd-font"
+brew "font-hack-nerd-font"

@@ -17,7 +17,6 @@ section() { echo -e "\n${YELLOW}── $* ──${NC}"; }
 
 # ──────────────────────────────────────────────────
 # 1. 系统基础环境与 Homebrew
-# ──────────────────────────────────────────────────
 section "System & Homebrew"
 
 info "更新系统软件包列表..."
@@ -37,7 +36,6 @@ fi
 
 # ──────────────────────────────────────────────────
 # 2. 拉取 Dotfiles 仓库
-# ──────────────────────────────────────────────────
 section "Dotfiles Repository"
 
 DOTFILES_DIR="$HOME/dotfiles"
@@ -59,6 +57,56 @@ else
     done
 fi
 
-info "所有基础步骤已完成！"
-echo -e "你的仓库已准备就绪：${GREEN}$DOTFILES_DIR${NC}"
-echo -e "你可以接着运行: ${YELLOW}bash $DOTFILES_DIR/scripts/restore.sh${NC}"
+# ──────────────────────────────────────────────────
+# 3. SSH 配置 (固定公钥授权)
+section "SSH Configuration"
+
+SSH_DIR="$HOME/.ssh"
+AUTH_KEYS="$SSH_DIR/authorized_keys"
+MY_PUBLIC_KEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII6dQPskL798729mboi6wFq+pJ0/gIET7dHEhUqMtoD6 noth"
+
+if [[ ! -d "$SSH_DIR" ]]; then
+    info "创建 $SSH_DIR 目录..."
+    mkdir -p "$SSH_DIR"
+    chmod 700 "$SSH_DIR"
+fi
+
+touch "$AUTH_KEYS"
+chmod 600 "$AUTH_KEYS"
+
+if grep -qF "$MY_PUBLIC_KEY" "$AUTH_KEYS"; then
+    info "公钥已存在，无需重复添加。"
+else
+    echo "$MY_PUBLIC_KEY" >> "$AUTH_KEYS"
+    info "公钥已成功硬编码至授权列表。"
+fi
+
+info "检查并启动 SSH 服务..."
+sudo apt-get install -y openssh-server
+sudo systemctl enable ssh --now
+
+# ──────────────────────────────────────────────────
+# 4. 交互式确认：运行同目录下的 install.sh
+# ──────────────────────────────────────────────────
+section "Next Steps"
+
+# 根据你提供的本地路径结构，推算服务器上的对应路径
+# 本地: /Users/noth/Dotfiles/CLI/Run This!/install.sh
+# 服务器克隆后: $HOME/dotfiles/CLI/Run This!/install.sh
+TARGET_INSTALL_SCRIPT="$DOTFILES_DIR/CLI/Run This!/install.sh"
+
+if [[ -f "$TARGET_INSTALL_SCRIPT" ]]; then
+    echo -ne "${YELLOW}仓库拉取成功。是否立即运行 $TARGET_INSTALL_SCRIPT? (y/n, 10s后默认y): ${NC}"
+    read -r -t 30 response || response="y"
+
+    if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+        info "正在启动安装程序..."
+        # 必须带引号，因为 "Run This!" 包含空格
+        bash "$TARGET_INSTALL_SCRIPT"
+    else
+        info "已跳过。你可以随后手动运行: ${YELLOW}bash \"$TARGET_INSTALL_SCRIPT\"${NC}"
+    fi
+else
+    warn "在仓库中未找到 install.sh"
+    info "检查路径: $TARGET_INSTALL_SCRIPT"
+fi
