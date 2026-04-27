@@ -29,7 +29,5 @@ brew "mediainfo"
 brew "ImageMagick"
 brew "rich-cli"
 # 字体 (Nerd Font)
-# 注意：Linux 下安装字体有时需要通过 tap
-tap "homebrew/cask-fonts"
-brew "font-symbols-only-nerd-font"
-brew "font-hack-nerd-font"
+cask "font-symbols-nerd-font"
+cask "font-hack-nerd-font"
