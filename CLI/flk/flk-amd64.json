@@ -1,6 +1,6 @@
 {
     "linux": {
-        "cli": {
+        "all": {
             "symlink": {
                 "~/.config": [
                     {
@@ -27,7 +27,7 @@
                         "fake": "~/.config/bat",
                         "real": "../Dotfiles/CLI/bat"
                     }
-                ]r
+                ]
             }
         }
     }
