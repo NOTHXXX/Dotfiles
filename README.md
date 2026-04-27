@@ -18,6 +18,7 @@
 ##🛠️ 脚本结构说明 (Scripts Tree)
 仓库中的自动化逻辑主要集中在 CLI/Run This!/ 目录下，采用分阶段解耦设计：
 
+```
 Plaintext
 Dotfiles
 └── CLI
@@ -38,3 +39,4 @@ Dotfiles
         │
         └── Brewfile         # 软件清单配置
                              # - 统一步管理所有需要安装的软件、Tap 仓库及字体。
+```
