@@ -176,25 +176,9 @@ if [[ -f "$FLK_EXEC" ]]; then
     chmod +x "$FLK_EXEC"
     
     # 运行 flk check
-    if "$FLK_EXEC" check; then
-        info "flk check 成功。"
+    if "$FLK_EXEC" fix; then
+        info "flk fix 成功。"
         
-        echo -ne "${YELLOW}是否立即应用 flk 配置? (y/n, 20s后默认n): ${NC}"
-        # 兼容管道模式的输入读取
-        if [[ -t 0 ]]; then
-            read -r -t 20 response || response="n"
         else
-            read -r -t 20 response < /dev/tty || response="n"
-        fi
-
-        if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-            "$FLK_EXEC" apply && info "配置已同步！"
-        else
-            info "已跳过应用。"
-        fi
-    else
-        warn "flk check 失败，请检查配置文件格式。"
-    fi
-else
     die "错误：未找到执行文件 $FLK_EXEC。"
 fi
