@@ -37,9 +37,21 @@ BREWFILE="$CURRENT_DIR/Brewfile"
 # ──────────────────────────────────────────────────
 section "Installing Software"
 
+# 定义代理地址
+PROXY_ADDR="http://192.168.31.10:20172"
+
 if [[ -f "$BREWFILE" ]]; then
     info "正在根据清单安装所有软件 (含 fish, yazi 等)..."
+    
+    # 【1. 注入环境变量代理】
+    export http_proxy="$PROXY_ADDR"
+    export https_proxy="$PROXY_ADDR"
+    export all_proxy="$PROXY_ADDR"
+    
     brew bundle --file="$BREWFILE"
+    
+    #2.清理代理
+    unset http_proxy https_proxy all_proxy
 else
     die "错误: 未能在 $CURRENT_DIR 找到 Brewfile。"
 fi
