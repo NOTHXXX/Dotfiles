@@ -4,13 +4,13 @@ if status is-interactive
 	# ── Homebrew Shell Environment
 		if test -x /opt/homebrew/bin/brew
 		/opt/homebrew/bin/brew shellenv | source
-		# 自动初始化linux  Homebrew 环境
+	end
+	# 自动初始化linux  Homebrew 环境
 		if test -d /home/linuxbrew/.linuxbrew
     			eval (/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 		else if test -d ~/.linuxbrew
     			eval (~/.linuxbrew/bin/brew shellenv)
 	end
-	
 
 	# Starship
 		if command -q starship
@@ -38,14 +38,18 @@ if status is-interactive
     end
 end
 
-function y
-    set tmp (mktemp -t "yazi-cwd.XXXXXX")
-    command yazi $argv --cwd-file=$tmp
-    set cwd (cat $tmp)
-    if test "$cwd" != "$PWD" -a -d "$cwd"
-        builtin cd -- $cwd
+function y --description "Yazi with auto-cd"
+    set -l tmp (mktemp -t "yazi-cwd.XXXXXX")
+    # 这里直接用 yazi，如果已执行 eval brew shellenv，Fish 能找到它
+    yazi $argv --cwd-file=$tmp
+    
+    if test -f "$tmp"
+        set -l last_cwd (cat $tmp)
+        if test -n "$last_cwd" -a "$last_cwd" != "$PWD" -a -d "$last_cwd"
+            builtin cd -- "$last_cwd"
+        end
+        rm -f "$tmp"
     end
-    rm -f $tmp
 end
 
 #bat主题
