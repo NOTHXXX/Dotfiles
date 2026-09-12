@@ -235,4 +235,23 @@ run = 'layout floating'
 if.app-id = 'com.tomatodo.app'
 run = 'layout floating'
 
+[[on-window-detected]]
+if.app-id = 'cn.better365.FastZip'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.bytedance.douyin.desktop'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.xiaomi.hyperConnect'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.xingin.xhs'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.coteditor.CotEditor'
+run = 'layout floating'
 
