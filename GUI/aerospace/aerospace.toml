@@ -180,7 +180,7 @@ on-mode-changed = []
 	#全屏
 	alt-f = 'fullscreen'
 	#macOS原生最小化
-    alt-c = 'macos-native-minimize'
+    #alt-c = 'macos-native-minimize'
 
     # 参见：https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     alt-tab = 'workspace-back-and-forth'

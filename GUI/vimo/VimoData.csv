@@ -1,0 +1,17 @@
+category_id,category,description,shortcuts,rebind,tag_id,tag
+Custom,Custom,工作区平衡窗口,Option-0,:w+0,aerospace,aerospace
+Custom,Custom,工作区移动显示器+,Command-Option-Control-=,:=,aerospace,aerospace
+Custom,Custom,工作区移动显示器-,Command-Option-Control--,:-,aerospace,aerospace
+Custom,Custom,工作区重置分屏,Option-Shift-0,:w+o,aerospace,aerospace
+Custom,Custom,homerow 滚动,Control-Option-Command-J,:j,homerow,homerow
+Custom,Custom,homerow 选择,Control-Option-Command-Space,:a,homerow,homerow
+Custom,Custom,ghostty快速终端,Control-`,:`,ghostty,ghostty
+Custom,Custom,切换输入法,Control-Space,:z,系统,系统
+Custom,Custom,ctrlc,Control-C,:c,系统,系统
+System,System,强制退出应用程序,Option-Command-Esc,:q+f,General,通用
+System,System,退出,Esc,:q+q,General,通用
+System,System,如果应用程序支持，则全屏使用应用程序,Control-Command-F,:w+f,Window Management,窗口管理
+System,System,关闭应用程序的所有窗口,Option-Command-W,:w+a,Window Management,窗口管理
+System,System,将前端应用程序的所有窗口最小化,Option-Command-M,:w+e,Window Management,窗口管理
+System,System,关闭前端窗口,Command-W,:w+q,Window Management,窗口管理
+System,System,将前端窗口最小化到Dock,Command-M,:w+c,Window Management,窗口管理
