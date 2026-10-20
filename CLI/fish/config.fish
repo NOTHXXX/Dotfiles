@@ -1,3 +1,7 @@
+# The following lines were added by Docker Desktop to add commands to your PATH.
+export PATH="$PATH:/Users/noth/.docker/bin"
+# End of Docker Desktop section.
+
 test ! -e "$HOME/.x-cmd.root/local/data/fish/rc.fish" || source "$HOME/.x-cmd.root/local/data/fish/rc.fish" # boot up x-cmd.
 if status is-interactive
 # Commands to run in interactive sessions can go here
@@ -69,3 +73,7 @@ set -gx BAT_THEME "Catppuccin Mocha"
     abbr -a bd 'brew deps --installed --tree'
     abbr -a bu 'brew update; and brew upgrade'
     abbr -a bc 'brew autoremove; and brew cleanup --prune=all'
+
+# Added by OrbStack: command-line tools and integration
+# This won't be added again if you remove it.
+source ~/.orbstack/shell/init2.fish 2>/dev/null || :

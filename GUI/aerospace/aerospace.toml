@@ -10,7 +10,7 @@ config-version = 2
 after-startup-command = []
 
 # 登录时自动启动 AeroSpace
-start-at-login = false
+start-at-login = true
 
 # 规范化设置。参见：https://nikitabobko.github.io/AeroSpace/guide#normalization
 enable-normalization-flatten-containers = true
@@ -177,8 +177,8 @@ on-mode-changed = []
     alt-shift-s = 'move-node-to-workspace S'
     alt-shift-d = 'move-node-to-workspace D'
 	
-	#全屏
-	alt-f = 'fullscreen'
+	#当前焦点改为浮动窗口
+	alt-f = 'layout floating tiling'
 	#macOS原生最小化
     #alt-c = 'macos-native-minimize'
 
@@ -240,7 +240,7 @@ if.app-id = 'cn.better365.FastZip'
 run = 'layout floating'
 
 [[on-window-detected]]
-if.app-id = 'com.bytedance.douyin.desktop'
+if.app-id = 'ai.deepseek.dsh.desktop.beta'
 run = 'layout floating'
 
 [[on-window-detected]]
@@ -248,10 +248,25 @@ if.app-id = 'com.xiaomi.hyperConnect'
 run = 'layout floating'
 
 [[on-window-detected]]
-if.app-id = 'com.xingin.xhs'
+if.app-id = 'com.deepseek.dsh'
 run = 'layout floating'
 
 [[on-window-detected]]
 if.app-id = 'com.coteditor.CotEditor'
 run = 'layout floating'
 
+[[on-window-detected]]
+if.app-id = 'com.openai.codex'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.bigpizzav3.codexplusplus.manager'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.bigpizzav3.codexplusplus'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'io.github.clash-verge-rev.clash-verge-rev'
+run = 'layout floating'
