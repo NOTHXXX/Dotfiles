@@ -19,11 +19,6 @@ run  = "search --via=fd"
 desc = "通过fd命令搜索文件" 
 
 [[mgr.prepend_keymap]]
-on = "o"
-run = "shell 'open \"$@\"' --confirm"
-desc = "用访达打开"
-
-[[mgr.prepend_keymap]]
 on   = ["f","s"]
 run  = "plugin smart-filter"
 desc = "Smart-filter插件筛选"
@@ -137,7 +132,7 @@ run = "copy path"
 desc = "复制文件路径"
 [[mgr.prepend_keymap]]
 on = ["c","d"]
-run = "copy dirname"
+run = "copy dirpath"
 desc = "复制目录路径"
 [[mgr.prepend_keymap]]
 on = ["c","f"]
@@ -200,3 +195,8 @@ desc = "大小排序(大小)"
 on = [",","r"]
 run = "sort random --reverse=no"
 desc = "随机排序"
+
+[[mgr.prepend_keymap]]
+on = [ "c", "p" ]
+run = "shell 'open -R \"$0\"' --orphan"
+desc = "在访达中显示（Reveal）"

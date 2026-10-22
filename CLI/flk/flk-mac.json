@@ -8,16 +8,8 @@
                         "real": "../dotfiles/CLI/starship/starship.toml"
                     },
                     {
-                        "fake": "~/Library/Application Support/lazygit/config.yml",
-                        "real": "../dotfiles/CLI/lazygit/config.yml"
-                    },
-                    {
                         "fake": "~/.config/yazi",
                         "real": "../dotfiles/CLI/yazi"
-                    },
-                    {
-                        "fake": "~/.config/fish",
-                        "real": "../dotfiles/CLI/fish"
                     },
                     {
                         "fake": "~/.config/btop",
@@ -34,9 +26,17 @@
                     {
                         "fake": "~/.config/ghostty",
                         "real": "../dotfiles/GUI/Ghostty"
+                    },
+                    {
+                        "fake": "~/Library/Application Support/lazygit/config.yml",
+                        "real": "../dotfiles/CLI/lazygit/config.yml"
+                    },
+                    {
+                        "fake": "~/.config/fish",
+                        "real": "../dotfiles/CLI/fish"
                     }
                 ]
             }
-        },
+        }
     }
 }

@@ -29,5 +29,5 @@ brew "mediainfo"
 brew "ImageMagick"
 brew "rich-cli"
 # 字体 (Nerd Font)
-cask "font-symbols-nerd-font"
+cask "font-symbols-only-nerd-font"
 cask "font-hack-nerd-font"
