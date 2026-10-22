@@ -215,6 +215,11 @@ on-mode-changed = []
     alt-shift-minus = 'resize height -50'
     alt-shift-equal = 'resize height +50'
 
+    # ============ 显示桌面 ============
+    # 模拟 F11（key code 103），触发 macOS 的"显示桌面"
+    # 需要给终端/AeroSpace 授予「辅助功能」与「自动化」权限，否则报 -10004 权限违例
+    alt-x = "exec-and-forget osascript -e 'tell application \"System Events\" to key code 103'"
+
     #平衡窗口
     alt-0 = 'balance-sizes'
     #重置分屏
