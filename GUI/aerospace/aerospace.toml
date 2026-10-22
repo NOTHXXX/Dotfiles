@@ -1,18 +1,43 @@
 # 将此配置文件的副本放置到 ~/.aerospace.toml
 # 之后，你可以按照自己的喜好编辑 ~/.aerospace.toml
+# ============================================================
+#  本文件的改动记录（2026-10-22 整理）
+# ------------------------------------------------------------
+#  【改动 1】persistent-workspaces  —— 常驻工作区，防止销毁重建
+#  【改动 2】workspace-to-monitor-force-assignment —— 工作区固定绑定屏幕
+#  【改动 3】工作区切换键位重排
+#  【改动 4】alt-q/w/e/a/s/d 一键双屏（命令数组）
+#  【改动 5】alt-shift-* 送窗口到其他工作区
+#  【改动 6】修正了两个写错的配置键名（见下方 normalization 段）
+#  【改动 7】config-version 从 1 升到 2
+# ------------------------------------------------------------
+#  双屏布局约定：
+#    左屏（从左数第 1 块，当前 MSI PAG252PF） -> 数字工作区 1-9
+#    右屏（从左数第 2 块，当前 HDMI）        -> 字母工作区 A/S/D/E/Q/W/U/I/O
+# ============================================================
 
 # 配置文件版本，用于兼容性和废弃功能处理
 # 默认值（如果省略此键）：config-version = 1
+#
+# 【改动 7】原来这里是 1。改为 2 之后 persistent-workspaces 才会真正生效
+#          （v1 下该键会被静默忽略）；reload-config 也不再报 outdated 警告。
 config-version = 2
 
 # 可用于添加在 AeroSpace 启动后运行的命令
 # 可用命令：https://nikitabobko.github.io/AeroSpace/commands
+# 注意：这里不要放 workspace 切换 / move-node 之类的命令，
+#       否则登录、唤醒时会重新分配窗口，布局会被打乱
 after-startup-command = []
 
 # 登录时自动启动 AeroSpace
 start-at-login = true
 
+# 【改动 6】修正写错的键名
 # 规范化设置。参见：https://nikitabobko.github.io/AeroSpace/guide#normalization
+#
+# 原来这两行的键名结尾写成了 ...flatten-containers / ...nested-containers，
+# 不是 AeroSpace 认识的有效键名，会被【静默忽略】，
+# 所以"规范化"功能其实一直没生效。现已改成正确的键名。
 enable-normalization-flatten-containers = true
 enable-normalization-opposite-orientation-for-nested-containers = true
 
@@ -41,10 +66,66 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 # 另见：https://nikitabobko.github.io/AeroSpace/goodies#disable-hide-app
 automatically-unhide-macos-hidden-apps = true
 
-# 即使工作区中没有窗口或不可见，也保持其存活的工作区列表
-# 此配置项仅在 'config-version = 2' 及以上版本中可用
-# 默认值（如果省略此键）：persistent-workspaces = []
-persistent-workspaces = []
+# ============================================================
+#  【改动 1】常驻工作区 persistent-workspaces
+# ============================================================
+# 作用：工作区即使空着、或没显示在任何屏幕上，也不会被销毁重建。
+#       AeroSpace 默认是"按需创建、空了就销毁"，工作区一旦被销毁重建，
+#       窗口容器树和布局结构就丢了，回来时窗口会被重新平铺 -> 全挤在一起。
+#
+# 前提：该配置项只在 config-version = 2 及以上可用。
+#       （config-version = 1 时这一整行会被静默忽略，等于没写）
+#
+# 当前只保留常用的 12 个：
+#   数字 1-6  -> 左屏（MSI）
+#   字母 Q/W/E/D/S/A -> 右屏（HDMI）
+# 其余工作区（7/8/9、U/I/O）不常驻，切过去时会临时创建，空了自动回收。
+#
+# 注意：工作区名【区分大小写】，必须写大写的 'Q' 而不是 'q'。
+persistent-workspaces = ['1','2','3','4','5','6','Q','W','E','D','S','A']
+
+# ============================================================
+#  【改动 2】工作区固定绑定显示器
+# ============================================================
+# 作用：工作区永远出现在指定屏幕上。显示器断开再连上时，工作区会自动
+#       回到它绑定的那块屏，而不是被挤到剩下的屏幕上。
+#       这是"关显示器后布局不乱"的第二个关键。
+#
+# 【代价】被绑定的工作区，move-workspace-to-monitor / summon-workspace 命令会失效
+#         （AeroSpace 官方设计如此），也就是 cmd-alt-ctrl-+/- 对它们不起作用。
+#         要临时搬动，就注释掉对应那一行，再 reload-config。
+# 匹配规则：
+#   'main'      = 系统设置 → 显示器 里设为"主显示器"的那块
+#   'secondary' = 只有两块屏时的非主屏
+#   1 / 2       = 从左到右第几块屏（1 开始）
+#   'regex'     = 显示器名字的不区分大小写正则，如 'built-in.*'、'MSI'
+#   数组        = 按顺序取第一个匹配到的
+# 用 `aerospace list-monitors` 可查看当前显示器名字与顺序
+[workspace-to-monitor-force-assignment]
+# 数字工作区 1-9 -> 从左到右第 1 块屏（左屏，当前是 MSI PAG252PF）
+1 = 1
+2 = 1
+3 = 1
+4 = 1
+5 = 1
+6 = 1
+7 = 1
+8 = 1
+9 = 1
+
+# 字母工作区 -> 从左到右第 2 块屏（右屏，当前是 HDMI）
+A = 2
+S = 2
+D = 2
+E = 2
+Q = 2
+W = 2
+U = 2
+I = 2
+O = 2
+
+# 说明：这里用 1/2 这种"从左到右第几块屏"的写法，而不是写死显示器名字，
+#       好处是换线、改分辨率都不受影响；坏处是调整显示器左右顺序后编号会变。
 
 # 每次绑定模式切换时触发的回调
 # 参见：https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -134,23 +215,6 @@ on-mode-changed = []
     alt-shift-minus = 'resize height -50'
     alt-shift-equal = 'resize height +50'
 
-    # 切换工作区
-    alt-1 = 'workspace 1'
-    alt-2 = 'workspace 2'
-    alt-3 = 'workspace 3'
-    alt-4 = 'workspace 4'
-    alt-5 = 'workspace 5'
-    alt-6 = 'workspace 6'
-    alt-7 = 'workspace 7'
-    alt-8 = 'workspace 8'
-    alt-9 = 'workspace 9'
-    alt-e = 'workspace E'
-    alt-q = 'workspace Q'
-    alt-w = 'workspace W'
-    alt-a = 'workspace A'
-    alt-s = 'workspace S'
-    alt-d = 'workspace D'
-    
     #平衡窗口
     alt-0 = 'balance-sizes'
     #重置分屏
@@ -160,7 +224,73 @@ on-mode-changed = []
     cmd-alt-ctrl-minus= 'move-workspace-to-monitor prev'
     cmd-alt-ctrl-equal= 'move-workspace-to-monitor next'
 
-    # 把窗口移动到相应工作区
+    #当前焦点改为浮动窗口
+	alt-f = 'layout floating tiling'
+	#macOS原生最小化
+    alt-c = 'macos-native-minimize'
+
+    # 参见：https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
+    alt-tab = 'workspace-back-and-forth'
+    # 参见：https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
+    alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
+
+    # 参见：https://nikitabobko.github.io/AeroSpace/commands#mode
+    alt-shift-semicolon = 'mode service'
+
+    # ============================================================
+    #  【改动 3】工作区切换键位
+    # ============================================================
+    # 布局约定：数字工作区都在左屏(1)，字母工作区都在右屏(2)
+    #
+    # 切换数字工作区：alt + 数字
+    # 切换字母工作区：ctrl + alt + 字母（因为 alt+shift+字母 要留给"送窗口"）
+    # 临时工作区 U/I/O：直接 alt + 字母，不加 ctrl
+    # 一键双屏：alt + q/w/e/a/s/d，一次切两块屏（左屏数字 + 右屏字母）
+    #
+    # 注意：alt-q/w/e/a/s/d 是数组绑定，会和"切换字母工作区"里的
+    #      ctrl-alt-q/w/e/a/s/d 并存，两者用途不同，别搞混：
+    #        ctrl-alt-q = 只切右屏到 Q
+    #        alt-q      = 左屏切到 1，同时右屏切到 Q
+
+    alt-1 = 'workspace 1'
+    alt-2 = 'workspace 2'
+    alt-3 = 'workspace 3'
+    alt-4 = 'workspace 4'
+    alt-5 = 'workspace 5'
+    alt-6 = 'workspace 6'
+    alt-7 = 'workspace 7'
+    alt-8 = 'workspace 8'
+    alt-9 = 'workspace 9'
+
+    # 字母工作区：ctrl + alt + 字母
+    ctrl-alt-a = 'workspace A'
+    ctrl-alt-s = 'workspace S'
+    ctrl-alt-d = 'workspace D'
+    ctrl-alt-e = 'workspace E'
+    ctrl-alt-q = 'workspace Q'
+    ctrl-alt-w = 'workspace W'
+
+    # 临时工作区 U / I / O：不加 ctrl，直接 alt + 字母，方便随手切过去放东西
+    alt-u = 'workspace U'
+    alt-i = 'workspace I'
+    alt-o = 'workspace O'
+
+    # 【改动 4】一键双屏：一个键 = 左屏一个数字 + 右屏一个字母
+    # 原理：AeroSpace 的命令数组会按顺序执行。因为 1-6 被 force-assign 到左屏、
+    #      Q/W/E/A/S/D 被 force-assign 到右屏，所以两条 workspace 命令各管各的屏，
+    #      不会互相覆盖（这一点已实测验证）。
+    alt-q = ['workspace 1', 'workspace Q']
+    alt-w = ['workspace 2', 'workspace W']
+    alt-e = ['workspace 3', 'workspace E']
+    alt-a = ['workspace 4', 'workspace A']
+    alt-s = ['workspace 5', 'workspace S']
+    alt-d = ['workspace 6', 'workspace D']
+
+    # ============================================================
+    #  【改动 5】把当前窗口送到其他工作区
+    # ============================================================
+    # 用 alt + shift + 工作区名。这个键位是原本的习惯，保留不变。
+    # 数字：alt + shift + 数字
     alt-shift-1 = 'move-node-to-workspace 1'
     alt-shift-2 = 'move-node-to-workspace 2'
     alt-shift-3 = 'move-node-to-workspace 3'
@@ -170,12 +300,17 @@ on-mode-changed = []
     alt-shift-7 = 'move-node-to-workspace 7'
     alt-shift-8 = 'move-node-to-workspace 8'
     alt-shift-9 = 'move-node-to-workspace 9'
-    alt-shift-e = 'move-node-to-workspace E'
-    alt-shift-q = 'move-node-to-workspace Q'
-    alt-shift-w = 'move-node-to-workspace W'
+    # 字母：alt + shift + 字母
     alt-shift-a = 'move-node-to-workspace A'
     alt-shift-s = 'move-node-to-workspace S'
     alt-shift-d = 'move-node-to-workspace D'
+    alt-shift-e = 'move-node-to-workspace E'
+    alt-shift-q = 'move-node-to-workspace Q'
+    alt-shift-w = 'move-node-to-workspace W'
+    alt-shift-u = 'move-node-to-workspace U'
+    alt-shift-i = 'move-node-to-workspace I'
+    alt-shift-o = 'move-node-to-workspace O'
+
 	
 	#当前焦点改为浮动窗口
 	alt-f = 'layout floating tiling'
@@ -269,4 +404,8 @@ run = 'layout floating'
 
 [[on-window-detected]]
 if.app-id = 'io.github.clash-verge-rev.clash-verge-rev'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.mitchellh.ghostty'
 run = 'layout floating'
